@@ -1,8 +1,12 @@
 import {Form, Input, Modal} from "antd";
 
-const CreateForm = (props) => {
+const FillingPopup = (props) => {
     const { visible, setVisible, onCreate } = props;
     const [form] = Form.useForm();
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
     const handleCreate = () => {
         form
@@ -20,9 +24,7 @@ const CreateForm = (props) => {
             open={visible}
             title="Create a new collection"
             okText="Ok"
-            onCancel={() => {
-                setVisible(false);
-            }}
+            onCancel={handleCancel}
             onOk={handleCreate}
         >
             <Form form={form} layout="vertical">
@@ -67,4 +69,4 @@ const CreateForm = (props) => {
     );
 };
 
-export default CreateForm;
+export default FillingPopup;

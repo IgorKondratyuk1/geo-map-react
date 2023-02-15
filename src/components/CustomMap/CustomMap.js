@@ -85,7 +85,6 @@ function CustomMap() {
                     >
                         <div>
                             {popupInfo.name}
-                            Wikipedia
                         </div>
                     </Popup>
                 )}

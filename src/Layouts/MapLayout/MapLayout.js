@@ -1,11 +1,12 @@
 import {Button, Col, Row, Space} from "antd";
 import React from "react";
-import CreateForm from "../../components/ResultForm/CreateForm";
 import s from "./MapLayout.module.css";
 import {db} from "../../db";
 import Map, {Marker, NavigationControl, Popup} from "react-map-gl";
 import CustomMarker from "../../components/CustomMap/CustomMarker/CustomMarker";
-import PopupContent from "../../components/PopupContent/PopupContent";
+import MarkerTypePopup from "../../components/MarkerTypePopup/MarkerTypePopup";
+import FillingPopup from "../../components/FillingPopup/FillingPopup";
+import PinContent from "../../components/PinContent/PinContent";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
@@ -13,10 +14,11 @@ export const MapLayout = () => {
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
     const [isCancelMarkerVisible, setIsCancelMarkerVisible] = React.useState(false);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isFillingModalOpen, setIsFillingModalOpen] = React.useState(false);
+    const [isMarkerTypeModalOpen, setIsMarkerTypeModalOpen] = React.useState(false);
 
-    // --- MAP START ---
-    const [popupInfo, setPopupInfo] = React.useState(null);
+    // --- Map start ---
+    const [pinInfo, setPinInfo] = React.useState(null);
     const [isTempMarkerShow, setIsTempMarkerShow] = React.useState(false);
     const [markers, setMarkers] = React.useState([]);
     const [tempMarker, setTempMarker] = React.useState({longitude: 30.54, latitude: 50.45});
@@ -30,27 +32,35 @@ export const MapLayout = () => {
         setTempMarker({longitude: viewState.longitude, latitude: viewState.latitude});
     };
 
-    const pins = () => markers.map((place, index) => {
+    const pins = () => markers.map((marker, index) => {
         return (
             <Marker key={index}
-                    longitude={place.longitude}
-                    latitude={place.latitude}
+                    longitude={marker.longitude}
+                    latitude={marker.latitude}
                     anchor="bottom"
+                    color={marker.color}
                     onClick={e => {
                         e.originalEvent.stopPropagation();
-                        setPopupInfo(place);
+                        setPinInfo(marker);
                     }}
             />
         )
     });
-    // --- MAP END ---
+    // --- Map end ---
 
-
+    // --- Helpers ---
     function setBtnsVisibility(createBtn, confirmBtn, cancelBtn) {
         setIsCreateMarkerVisible(createBtn);
         setIsCancelMarkerVisible(cancelBtn);
         setIsConfirmMarkerVisible(confirmBtn);
     }
+
+    const generateNewMarker = () => {
+        const mapCenter = map.current.getCenter();
+        setTempMarker({longitude: mapCenter.lng, latitude: mapCenter.lat});
+        setIsTempMarkerShow(true);
+    }
+    // ---- Helpers end ----
 
     function onCancelMarker() {
         setIsTempMarkerShow(false);
@@ -58,23 +68,22 @@ export const MapLayout = () => {
     }
 
     function onAddMarker() {
-        const mapCenter = map.current.getCenter();
-        setTempMarker({longitude: mapCenter.lng, latitude: mapCenter.lat});
-        setIsTempMarkerShow(true);
+        setIsMarkerTypeModalOpen(true);
         setBtnsVisibility(false, true, true);
     }
 
     function onConfirmMarker() {
-        setIsModalOpen(true);
+        setIsFillingModalOpen(true);
     }
+
 
     const onCreate = (values) => {
         alert(JSON.stringify(values));
         setMarkers((markers) => [...markers,
-            {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, radiationLevel: values.radiationLevel}
+            {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, radiationLevel: values.geoValues.radiationLevel}
         ]);
         setIsTempMarkerShow(false);
-        setIsModalOpen(false);
+        setIsFillingModalOpen(false);
         setBtnsVisibility(true, false, false);
     };
 
@@ -92,7 +101,7 @@ export const MapLayout = () => {
                         }}
                         onMove={onMove}
                         onLoad={onLoad}
-                        style={{height: "500px", width: "100%"}}
+                        style={{height: "75vh", width: "100%"}}
                         mapStyle="mapbox://styles/mapbox/streets-v9"
                         mapboxAccessToken={APP_MAP_TOKEN}
                         attributionControl={true}
@@ -102,14 +111,14 @@ export const MapLayout = () => {
 
                         { isTempMarkerShow && <CustomMarker longitude={tempMarker.longitude} latitude={tempMarker.latitude} />}
 
-                        {popupInfo && (
+                        {pinInfo && (
                             <Popup
                                 anchor="top"
-                                longitude={Number(popupInfo.longitude)}
-                                latitude={Number(popupInfo.latitude)}
-                                onClose={() => setPopupInfo(null)}
+                                longitude={Number(pinInfo.longitude)}
+                                latitude={Number(pinInfo.latitude)}
+                                onClose={() => setPinInfo(null)}
                             >
-                                <PopupContent popupInfo={popupInfo} />
+                                <PinContent data={pinInfo} />
                             </Popup>
                         )}
                     </Map>
@@ -131,9 +140,16 @@ export const MapLayout = () => {
                 </Col>
             </Row>
 
-            <CreateForm
-                visible={isModalOpen}
-                setVisible={setIsModalOpen}
+            <MarkerTypePopup
+                visible={isMarkerTypeModalOpen}
+                setVisible={setIsMarkerTypeModalOpen}
+                onCancel={onCancelMarker}
+                onOk={generateNewMarker}
+            />
+
+            <FillingPopup
+                visible={isFillingModalOpen}
+                setVisible={setIsFillingModalOpen}
                 onCreate={onCreate}
             />
         </>
