@@ -1,16 +1,21 @@
 import {Button, Col, Row, Space} from "antd";
 import React from "react";
 import s from "./MapLayout.module.css";
-import {db} from "../../db";
 import Map, {Marker, NavigationControl, Popup} from "react-map-gl";
 import CustomMarker from "../../components/CustomMap/CustomMarker/CustomMarker";
 import MarkerTypePopup from "../../components/MarkerTypePopup/MarkerTypePopup";
 import FillingPopup from "../../components/FillingPopup/FillingPopup";
 import PinContent from "../../components/PinContent/PinContent";
+import {addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
+import axios from "axios";
+import {useDispatch, useSelector} from "react-redux";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
 export const MapLayout = () => {
+    const markers = useSelector((state) => state.markers);
+    const dispatch = useDispatch();
+
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
     const [isCancelMarkerVisible, setIsCancelMarkerVisible] = React.useState(false);
@@ -20,12 +25,20 @@ export const MapLayout = () => {
     // --- Map start ---
     const [pinInfo, setPinInfo] = React.useState(null);
     const [isTempMarkerShow, setIsTempMarkerShow] = React.useState(false);
-    const [markers, setMarkers] = React.useState([]);
     const [tempMarker, setTempMarker] = React.useState({longitude: 30.54, latitude: 50.45});
     const map = React.useRef(null);
 
-    const onLoad = () => {
-        setMarkers(db.markers);
+    const loadMarkersData = async () => {
+        const result = await axios.get('https://62f55046ac59075124cfa259.mockapi.io/markers');
+        if (result.status === 200) {
+            dispatch(addMarkers(result.data));
+        } else {
+            alert(result.status);
+        }
+    }
+
+    const onLoad = async () => {
+        await loadMarkersData();
     }
 
     const onMove = ({viewState}) => {
@@ -77,15 +90,25 @@ export const MapLayout = () => {
     }
 
 
-    const onCreate = (values) => {
-        alert(JSON.stringify(values));
-        setMarkers((markers) => [...markers,
-            {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, radiationLevel: values.geoValues.radiationLevel}
-        ]);
+    const onCreate = async (values) => {
+        // TODO detect color
+        const newMarker = {id: Date.now(), color: "green", longitude: tempMarker.longitude, latitude: tempMarker.latitude, geoValues: {type: "none", radiationLevel: values.radiationLevel}};
+        await createMarkerOnServer(newMarker);
+        console.log(newMarker);
         setIsTempMarkerShow(false);
         setIsFillingModalOpen(false);
         setBtnsVisibility(true, false, false);
     };
+
+    const createMarkerOnServer = async (marker) => {
+        const result = await axios.post('https://62f55046ac59075124cfa259.mockapi.io/markers', marker, {headers: {'Content-Type': 'application/json'}});
+        if (result.status >= 200 && result.status < 300) {
+            dispatch(addOneMarker(marker));
+            console.log(result);
+        } else {
+            alert(result.status);
+        }
+    }
 
     return (
         <>
