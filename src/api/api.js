@@ -1,9 +1,10 @@
 import axios from "axios";
-import {addMarkers, addOneMarker} from "../redux/slices/markersSlice";
+
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export const api = {
     loadMarkersData: async () => {
-        const result = await axios.get('https://62f55046ac59075124cfa259.mockapi.io/markers');
+        const result = await axios.get(`${baseUrl}/markers`);
         if (result.status >= 200 && result.status < 300) {
             return result;
         } else {
@@ -12,7 +13,7 @@ export const api = {
         }
     },
     createMarkerOnServer: async (marker) => {
-        const result = await axios.post('https://62f55046ac59075124cfa259.mockapi.io/markers', marker, {headers: {'Content-Type': 'application/json'}});
+        const result = await axios.post(`${baseUrl}/markers`, marker, {headers: {'Content-Type': 'application/json'}});
         if (result.status >= 200 && result.status < 300) {
             return result
         } else {

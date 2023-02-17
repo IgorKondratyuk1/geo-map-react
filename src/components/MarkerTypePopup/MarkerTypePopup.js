@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Modal, Select} from "antd";
 import {markersType} from "../../tempData";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {changeMarkerType} from "../../redux/slices/tempMarkerSlice";
 
 function MarkerTypePopup(props) {
