@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {retry} from "@reduxjs/toolkit/query";
 
 const markersSlice = createSlice({
     name: 'markers',

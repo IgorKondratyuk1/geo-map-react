@@ -7,15 +7,17 @@ import MarkerTypePopup from "../../components/MarkerTypePopup/MarkerTypePopup";
 import FillingPopup from "../../components/FillingPopup/FillingPopup";
 import PinContent from "../../components/PinContent/PinContent";
 import {addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
-import axios from "axios";
 import {useDispatch, useSelector} from "react-redux";
+import {api} from "../../api/api";
+import {detectMarkerColor} from "../../helpers/detectMarkerColor";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
 export const MapLayout = () => {
     const markers = useSelector((state) => state.markers);
+    const markerType = useSelector((state) => state.tempMarker.markerType);
     const dispatch = useDispatch();
-
+    console.log(markerType);
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
     const [isCancelMarkerVisible, setIsCancelMarkerVisible] = React.useState(false);
@@ -28,14 +30,6 @@ export const MapLayout = () => {
     const [tempMarker, setTempMarker] = React.useState({longitude: 30.54, latitude: 50.45});
     const map = React.useRef(null);
 
-    const loadMarkersData = async () => {
-        const result = await axios.get('https://62f55046ac59075124cfa259.mockapi.io/markers');
-        if (result.status === 200) {
-            dispatch(addMarkers(result.data));
-        } else {
-            alert(result.status);
-        }
-    }
 
     const onLoad = async () => {
         await loadMarkersData();
@@ -46,12 +40,13 @@ export const MapLayout = () => {
     };
 
     const pins = () => markers.map((marker, index) => {
+        const color = detectMarkerColor(marker.type);
         return (
             <Marker key={index}
                     longitude={marker.longitude}
                     latitude={marker.latitude}
                     anchor="bottom"
-                    color={marker.color}
+                    color={color}
                     onClick={e => {
                         e.originalEvent.stopPropagation();
                         setPinInfo(marker);
@@ -91,8 +86,7 @@ export const MapLayout = () => {
 
 
     const onCreate = async (values) => {
-        // TODO detect color
-        const newMarker = {id: Date.now(), color: "green", longitude: tempMarker.longitude, latitude: tempMarker.latitude, geoValues: {type: "none", radiationLevel: values.radiationLevel}};
+        const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: { radiationLevel: values.radiationLevel}};
         await createMarkerOnServer(newMarker);
         console.log(newMarker);
         setIsTempMarkerShow(false);
@@ -100,14 +94,14 @@ export const MapLayout = () => {
         setBtnsVisibility(true, false, false);
     };
 
+    const loadMarkersData = async () => {
+        const result = await api.loadMarkersData();
+        if (result) dispatch(addMarkers(result.data));
+    };
+
     const createMarkerOnServer = async (marker) => {
-        const result = await axios.post('https://62f55046ac59075124cfa259.mockapi.io/markers', marker, {headers: {'Content-Type': 'application/json'}});
-        if (result.status >= 200 && result.status < 300) {
-            dispatch(addOneMarker(marker));
-            console.log(result);
-        } else {
-            alert(result.status);
-        }
+        const result = await api.createMarkerOnServer(marker);
+        if (result) dispatch(addOneMarker(marker));
     }
 
     return (
@@ -132,7 +126,7 @@ export const MapLayout = () => {
                         <NavigationControl />
                         {pins()}
 
-                        { isTempMarkerShow && <CustomMarker longitude={tempMarker.longitude} latitude={tempMarker.latitude} />}
+                        { isTempMarkerShow && <CustomMarker longitude={tempMarker.longitude} latitude={tempMarker.latitude} color={detectMarkerColor(markerType)} />}
 
                         {pinInfo && (
                             <Popup

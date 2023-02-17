@@ -17,7 +17,7 @@ function CustomMarker(props) {
             longitude={marker.longitude}
             latitude={marker.latitude}
             onDragEnd={onMarkerDragEnd}
-            color="red"
+            color={props.color}
             anchor="bottom"
             draggable
         />
