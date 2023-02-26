@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const baseUrl = process.env.REACT_APP_BASE_URL;
-
 export const api = {
     loadMarkersData: async () => {
         const result = await axios.get(`${baseUrl}/markers`);

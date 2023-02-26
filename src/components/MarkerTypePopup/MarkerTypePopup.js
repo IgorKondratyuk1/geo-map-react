@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import {Modal, Select} from "antd";
-import {markersType} from "../../tempData";
 import {useDispatch} from "react-redux";
 import {changeMarkerType} from "../../redux/slices/tempMarkerSlice";
+import {markersType} from "../../dictionariesData";
 
 function MarkerTypePopup(props) {
     const {visible, setVisible, onCancel, onOk} = props;

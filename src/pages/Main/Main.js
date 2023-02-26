@@ -4,7 +4,6 @@ import s from "./MainPage.module.css";
 import CustomHeader from "../../components/CustomHeader/CustomHeader";
 const { Content } = Layout;
 
-
 const MainPage = () => {
     const {
         token: { colorBgContainer },

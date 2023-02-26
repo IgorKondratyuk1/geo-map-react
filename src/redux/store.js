@@ -5,6 +5,6 @@ import tempMarkerSlice from "./slices/tempMarkerSlice";
 export const store = configureStore({
     reducer: {
         markers: markersSlice,
-        tempMarker: tempMarkerSlice
+        tempMarker: tempMarkerSlice,
     }
 });

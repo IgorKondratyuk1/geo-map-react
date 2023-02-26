@@ -14,10 +14,10 @@ import {detectMarkerColor} from "../../helpers/detectMarkerColor";
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
 export const MapLayout = () => {
+    const dispatch = useDispatch();
     const markers = useSelector((state) => state.markers);
     const markerType = useSelector((state) => state.tempMarker.markerType);
-    const dispatch = useDispatch();
-    console.log(markerType);
+
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
     const [isCancelMarkerVisible, setIsCancelMarkerVisible] = React.useState(false);
@@ -86,6 +86,7 @@ export const MapLayout = () => {
 
 
     const onCreate = async (values) => {
+        console.log(values);
         const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: { radiationLevel: values.radiationLevel}};
         await createMarkerOnServer(newMarker);
         console.log(newMarker);

@@ -1,8 +1,11 @@
-import {Form, Input, Modal} from "antd";
+import {Form, Modal} from "antd";
+import {useSelector} from "react-redux";
+import {getFormFields} from "../../helpers/getFormFields";
 
 const FillingPopup = (props) => {
     const { visible, setVisible, onCreate } = props;
     const [form] = Form.useForm();
+    const markerType = useSelector((state) => state.tempMarker.markerType);
 
     const handleCancel = () => {
         setVisible(false);
@@ -22,48 +25,13 @@ const FillingPopup = (props) => {
     return (
         <Modal
             open={visible}
-            title="Create a new collection"
+            title="Внесіть показники"
             okText="Ok"
             onCancel={handleCancel}
             onOk={handleCreate}
         >
             <Form form={form} layout="vertical">
-                <Form.Item
-                    label="Оцінка грунку"
-                    name="soilMark"
-                    rules={[
-                        { required: true, message: "Please input the value!" }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Оцінка повітря"
-                    name="airMark"
-                    rules={[
-                        { required: true, message: "Please input the value!" }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Оцінка води"
-                    name="waterMark"
-                    rules={[
-                        { required: true, message: "Please input the value!" }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    label="Рівень радіації"
-                    name="radiationLevel"
-                    rules={[
-                        { required: true, message: "Please input the value!" }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                {getFormFields(markerType)}
             </Form>
         </Modal>
     );
