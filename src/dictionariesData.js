@@ -1,7 +1,7 @@
 export const markersType = [
     {
         label: "Водний об'єкт",
-        value: "water_mark"
+        value: "water"
     },
     {
         label: "Грунт",

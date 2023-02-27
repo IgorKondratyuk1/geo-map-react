@@ -89,7 +89,6 @@ export const MapLayout = () => {
         console.log(values);
         const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: values};
         await createMarkerOnServer(newMarker);
-        console.log(newMarker);
         setIsTempMarkerShow(false);
         setIsFillingModalOpen(false);
         setBtnsVisibility(true, false, false);
