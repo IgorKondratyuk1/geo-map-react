@@ -35,11 +35,49 @@ export const airParams = [
         value: "co2"
     },
     {
-        label: " Діоксид азоту (NO2)",
+        label: "Діоксид азоту (NO2)",
         value: "no2"
     },
     {
         label: "Діоксид сірки (SO2)",
         value: "so2"
     },
+]
+
+export const waterParams = [
+    {
+        label: "Залізо",
+        value: "fe"
+    },
+    {
+        label: "Марганець",
+        value: "mn"
+    },
+    {
+        label: "Мідь",
+        value: "cu"
+    },
+    {
+        label: "Феноли",
+        value: "c6h6o"
+    },
+    {
+        label: "Ртуть",
+        value: "hg"
+    },
+]
+
+export const radiationParams = [
+    {
+        label: "Радіоактивність",
+        value: "radioactivity"
+    },
+    {
+        label: "Радон",
+        value: "rn"
+    },
+    {
+        label: "Радіонукліди",
+        value: "radionuclides"
+    }
 ]

@@ -87,7 +87,7 @@ export const MapLayout = () => {
 
     const onCreate = async (values) => {
         console.log(values);
-        const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: { radiationLevel: values.radiationLevel}};
+        const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: values};
         await createMarkerOnServer(newMarker);
         console.log(newMarker);
         setIsTempMarkerShow(false);

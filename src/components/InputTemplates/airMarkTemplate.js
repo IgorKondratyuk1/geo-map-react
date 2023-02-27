@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Form, Input, Select, Space} from "antd";
+import {Button, Divider, Form, Input, Select, Space} from "antd";
 import {airParams, markersType} from "../../dictionariesData";
 
 const AirInput = ({index}) => {
@@ -28,10 +28,11 @@ const AirMarkTemplate = () => {
 
     return (
         <>
-            { inputs.map((input, index) => <AirInput index={index}/>) }
+            { inputs.map((input, index) => <AirInput key={index} index={index}/>) }
             <Button onClick={onAddInput}>
                 Додати показник повітря
             </Button>
+            <Divider />
         </>
     );
 };
