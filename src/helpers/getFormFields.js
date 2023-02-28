@@ -7,7 +7,7 @@ import React from "react";
 
 const defaultComponent = <div>Something wrong...</div>;
 const fields = [
-    { name: "water_mark", component: <WaterMarkTemplate /> },
+    { name: "water", component: <WaterMarkTemplate /> },
     { name: "soil", component: <SoilMarkTemplate /> },
     { name: "radiation", component: <RadiationMarkTemplate /> },
     { name: "air", component: <AirMarkTemplate /> },

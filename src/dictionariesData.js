@@ -70,14 +70,53 @@ export const waterParams = [
 export const radiationParams = [
     {
         label: "Радіоактивність",
-        value: "radioactivity"
+        value: "bq"
     },
     {
-        label: "Радон",
+        label: "Радон-222",
         value: "rn"
     },
     {
-        label: "Радіонукліди",
-        value: "radionuclides"
+        label: "Цезій-137",
+        value: "cs"
+    },
+    {
+        label: "Стронцій-90",
+        value: "sr"
+    },
+    {
+        label: "Йод-131",
+        value: "i"
+    }
+]
+
+export const soilParams = [
+    {
+        label: "Кадмій",
+        value: "cd"
+    },
+    {
+        label: "Свинець",
+        value: "pb"
+    },
+    {
+        label: "Мідь",
+        value: "cu"
+    },
+    {
+        label: "Нікель",
+        value: "ni"
+    },
+    {
+        label: "Хром",
+        value: "cr"
+    },
+    {
+        label: "Цинк",
+        value: "zn"
+    },
+    {
+        label: "Пестициди",
+        value: "pesticides"
     }
 ]

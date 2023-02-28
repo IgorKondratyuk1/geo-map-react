@@ -1,6 +1,6 @@
 export const detectMarkerColor = (param) => {
     switch (param) {
-        case "water_mark":
+        case "water":
             return "blue";
         case "company":
             return "orange";

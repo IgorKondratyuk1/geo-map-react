@@ -1,20 +1,26 @@
 import React from 'react';
 import {markersType} from "../../dictionariesData";
+import {getMarkerLabelName} from "../../helpers/getMarkerPropertyName";
+import {Divider} from "antd";
 
-const formatGroupTitle = (name) => {
-    if (name) return "Оцінка " + name.toLocaleLowerCase();
-    return 'Оцінка показника';
+const sortByAlphabet = (paramObj) => {
+    return [...paramObj].sort((a, b) => {
+        if (a.markerType.label === 'Назва компанії') return -1;
+        if (b.markerType.label === 'Назва компанії') return 1;
+
+        if (a.markerType.label > b.markerType.label) return -1;
+        else return 1;
+        return 0;
+    });
 }
 
-const getMarkerTypeTitle = (type) => {
-    const result = markersType.find(m => m.value === type);
-    return result?.label || null;
-}
+const getMarkerType = (type) => markersType.find(m => m.value === type);
 
 const valuesParser = (geoValues) => {
+    console.log('geo');
+    console.log(geoValues);
     let result = [];
-    if (geoValues.companyName) { result.push({groupTitle: "Назва компанії", name: null, value: geoValues.companyName}) }
-    if (geoValues.soilMark) { result.push({groupTitle: "Оцінка грунту", name: null, value: geoValues.soilMark}) }
+    if (geoValues.companyName) { result.push({markerType: {label:"Назва компанії", value: geoValues.companyName}, name: null, value: geoValues.companyName}) }
 
     const values = Object.keys(geoValues);
     values.forEach((value, index, array) => {
@@ -23,31 +29,40 @@ const valuesParser = (geoValues) => {
 
             array.forEach(elem => {
                 let valueName = (name + 'MarkValue_' + number);
-                let groupTitle = getMarkerTypeTitle(name);
-                let formattedGroupTitle = formatGroupTitle(groupTitle)
-                if (valueName === elem) { result.push({groupTitle: formattedGroupTitle, name: geoValues[value], value: geoValues[elem]}) }
+
+                
+                if (valueName === elem) {
+                    let markerType = getMarkerType(name);
+                    result.push({markerType: markerType, name: geoValues[value], value: geoValues[elem]})
+                }
             })
         }
     });
 
 
-    return result;
+    return sortByAlphabet(result);
 }
 
 function PinContent({data}) {
     const noTypeFoundStr = 'Параметр не знайдено';
+    const formattedGeoValues = valuesParser(data.geoValues);
+    const markerType = getMarkerType(data.type);
 
     return (
         <div>
-             ID: {data.id}
+            ID: {data.id}
             <br/>
-            Тип маркера: {getMarkerTypeTitle(data.type) || noTypeFoundStr}
+            Тип маркера: {markerType.label || noTypeFoundStr}
+
             <br/>
-            {valuesParser(data.geoValues).map(elem => {
+            {formattedGeoValues.map(elem => {
+                let propertyLabel = getMarkerLabelName(elem.markerType.value, elem.name);
+                let formattedParamTitle = elem.markerType.label;
+
                 return (
                     <>
-                        {elem.groupTitle}: {elem.name ? elem.name + " = " : ""}  {elem.value}
-                        <br/>
+                        {formattedParamTitle}: {propertyLabel ? propertyLabel + " = " : ""} {elem.value}
+                        <Divider style={{margin: '0px', padding: '0px'}}/>
                     </>
                 )
             })}
