@@ -5,7 +5,6 @@ import Map, {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import React from "react";
-import {db} from "../../db";
 import CustomMarker from "./CustomMarker/CustomMarker";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
@@ -17,9 +16,7 @@ function CustomMap() {
     const [tempMarker, setTempMarker] = React.useState({longitude: 30.54, latitude: 50.45});
     const map = React.useRef(null);
 
-    const onLoad = () => {
-        setMarkers(db.markers);
-    }
+    // const onLoad = () => {}
 
     const onMove = ({viewState}) => {
         setTempMarker({longitude: viewState.longitude, latitude: viewState.latitude});

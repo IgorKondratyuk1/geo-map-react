@@ -1,22 +1,22 @@
 export const markersType = [
     {
-        label: "Водний об'єкт",
+        label: `Точка збору "Водний об'єкт"`,
         value: "water"
     },
     {
-        label: "Грунт",
+        label: 'Точка збору "Грунт"',
         value: "soil"
     },
     {
-        label: "Радіація",
+        label: 'Точка збору "Радіація"',
         value: "radiation"
     },
     {
-        label: "Повітря",
+        label: 'Точка збору "Повітря"',
         value: "air"
     },
     {
-        label: "Компанія",
+        label: 'Підприємство',
         value: "company"
     },
 ];

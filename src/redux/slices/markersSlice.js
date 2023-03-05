@@ -10,9 +10,8 @@ const markersSlice = createSlice({
         addOneMarker(state, action) {
             return [...state, action.payload];
         },
-        deleteOneMarker(state, action) {},
     },
 })
 
-export const { addMarkers, addOneMarker, deleteOneMarker } = markersSlice.actions;
+export const { addMarkers, addOneMarker } = markersSlice.actions;
 export default markersSlice.reducer;

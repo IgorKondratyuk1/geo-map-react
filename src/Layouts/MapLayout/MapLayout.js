@@ -7,9 +7,10 @@ import MarkerTypePopup from "../../components/MarkerTypePopup/MarkerTypePopup";
 import FillingPopup from "../../components/FillingPopup/FillingPopup";
 import PinContent from "../../components/PinContent/PinContent";
 import {addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector, useStore} from "react-redux";
 import {api} from "../../api/api";
 import {detectMarkerColor} from "../../helpers/detectMarkerColor";
+import {setCoordinates, setType} from "../../redux/slices/indicatorsFormSlice";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
@@ -17,6 +18,7 @@ export const MapLayout = () => {
     const dispatch = useDispatch();
     const markers = useSelector((state) => state.markers);
     const markerType = useSelector((state) => state.tempMarker.markerType);
+    const store = useStore()
 
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
@@ -86,9 +88,11 @@ export const MapLayout = () => {
 
 
     const onCreate = async (values) => {
-        console.log(values);
-        const newMarker = {id: Date.now(), longitude: tempMarker.longitude, latitude: tempMarker.latitude, type: markerType, geoValues: values};
-        await createMarkerOnServer(newMarker);
+        dispatch(setType(markerType));
+        dispatch(setCoordinates({longitude: tempMarker.longitude, latitude: tempMarker.latitude}));
+        await createMarkerOnServer(store.getState().indicatorsForm);
+
+        // Default markers and buttons visibility
         setIsTempMarkerShow(false);
         setIsFillingModalOpen(false);
         setBtnsVisibility(true, false, false);
@@ -148,10 +152,10 @@ export const MapLayout = () => {
                             <Button onClick={onCancelMarker} danger>Відмнити</Button>
                         }
                         {isConfirmMarkerVisible &&
-                            <Button onClick={onConfirmMarker} type="primary">Додати мітку</Button>
+                            <Button onClick={onConfirmMarker} type="primary">Додати маркер</Button>
                         }
                         {isCreateMarkerVisible &&
-                            <Button onClick={onAddMarker} type="primary">Створити мітку</Button>
+                            <Button onClick={onAddMarker} type="primary">Створити маркер</Button>
                         }
                     </Space>
                 </Col>

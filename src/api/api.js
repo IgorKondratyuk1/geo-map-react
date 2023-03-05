@@ -14,7 +14,7 @@ export const api = {
     createMarkerOnServer: async (marker) => {
         const result = await axios.post(`${baseUrl}/markers`, marker, {headers: {'Content-Type': 'application/json'}});
         if (result.status >= 200 && result.status < 300) {
-            return result
+            return result;
         } else {
             console.log(result.status + " " + result.statusText);
         }
