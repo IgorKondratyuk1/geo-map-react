@@ -27,12 +27,12 @@ function MarkerTypePopup(props) {
     };
 
     return (
-        <Modal title="Тип маркеру" open={visible} onOk={handleOk} onCancel={handleCancel}>
+        <Modal title="Тип показника" open={visible} onOk={handleOk} onCancel={handleCancel}>
             <Select
                 defaultValue={markersType[0]}
                 style={{ width: '100%' }}
                 onChange={handleSelectChange}
-                placeholder="Оберіть тип маркеру"
+                placeholder="Оберіть тип показника"
                 options={markersType}
             />
         </Modal>

@@ -16,9 +16,26 @@ export const markersType = [
         value: "air"
     },
     {
+        label: 'Точка збору "Відходи"',
+        value: "waste"
+    },
+    {
+        label: 'Точка збору "Економічні показники"',
+        value: "economic"
+    },
+    {
+        label: 'Точка збору "Стан здоров’я населення"',
+        value: "health"
+    },
+    {
+        label: 'Точка збору "Енергетичний стан"',
+        value: "energy"
+    },
+    {
         label: 'Підприємство',
         value: "company"
     },
+
 ];
 
 export const airParams = [
@@ -119,4 +136,88 @@ export const soilParams = [
         label: "Пестициди",
         value: "pesticides"
     }
+]
+
+export const wasteParams = [
+    {
+        label: "Клас небезпеки",
+        value: "dangerClass"
+    },
+    {
+        label: "Токсичність",
+        value: "toxicity"
+    },
+    {
+        label: "Склад",
+        value: "storage"
+    },
+    {
+        label: "Маса або об’єм",
+        value: "mass"
+    }
+]
+
+export const economicParams = [
+    {
+        label: "Валовий внутрішній продукт",
+        value: "vvp"
+    },
+    {
+        label: "Вантажообіг",
+        value: "freightTurnover"
+    },
+    {
+        label: "Пасажирообіг",
+        value: "passengerTurnover"
+    },
+    {
+        label: "Експорт товарів та послуг",
+        value: "export"
+    },
+    {
+        label: "Імпорт товарів та послуг",
+        value: "import"
+    },
+    {
+        label: "Заробітна плата",
+        value: "salary"
+    }
+];
+
+export const healthParams = [
+    {
+        label: "Медико-демографічні показники",
+        value: "medicalDemographic"
+    },
+    {
+        label: "Хворобливість",
+        value: "morbidity"
+    },
+    {
+        label: "Інвалідності та інвалідизації",
+        value: "disability"
+    },
+    {
+        label: "Фізичного розвитку населення",
+        value: "physicalDevelopment"
+    },
+]
+
+export const energyParams = [
+    {
+        label: "Обсяги використання води",
+        value: "water"
+    },
+    {
+        label: "Обсяги використання електроенергії",
+        value: "electricity"
+    },
+    {
+        label: "Обсяги використання газу",
+        value: "gas"
+    },
+    {
+        label: "Обсяги використання теплової енергії",
+        value: "thermalEnergy"
+    },
 ]

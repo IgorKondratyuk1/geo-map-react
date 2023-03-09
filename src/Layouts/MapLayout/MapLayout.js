@@ -10,7 +10,7 @@ import {addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
 import {useDispatch, useSelector, useStore} from "react-redux";
 import {api} from "../../api/api";
 import {detectMarkerColor} from "../../helpers/detectMarkerColor";
-import {setCoordinates, setType} from "../../redux/slices/indicatorsFormSlice";
+import {setCoordinates, setDefaultState, setType} from "../../redux/slices/indicatorsFormSlice";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
@@ -73,6 +73,7 @@ export const MapLayout = () => {
     // ---- Helpers end ----
 
     function onCancelMarker() {
+        dispatch(setDefaultState())
         setIsTempMarkerShow(false);
         setBtnsVisibility(true, false, false);
     }
@@ -91,6 +92,9 @@ export const MapLayout = () => {
         dispatch(setType(markerType));
         dispatch(setCoordinates({longitude: tempMarker.longitude, latitude: tempMarker.latitude}));
         await createMarkerOnServer(store.getState().indicatorsForm);
+        await loadMarkersData();
+
+        dispatch(setDefaultState()) // clearState
 
         // Default markers and buttons visibility
         setIsTempMarkerShow(false);
@@ -130,7 +134,7 @@ export const MapLayout = () => {
                         <NavigationControl />
                         {pins()}
 
-                        { isTempMarkerShow && <CustomMarker longitude={tempMarker.longitude} latitude={tempMarker.latitude} color={detectMarkerColor(markerType)} />}
+                        { isTempMarkerShow && <CustomMarker longitude={tempMarker.longitude} latitude={tempMarker.latitude} color={'white'} />}
 
                         {pinInfo && (
                             <Popup
@@ -152,10 +156,10 @@ export const MapLayout = () => {
                             <Button onClick={onCancelMarker} danger>Відмнити</Button>
                         }
                         {isConfirmMarkerVisible &&
-                            <Button onClick={onConfirmMarker} type="primary">Додати маркер</Button>
+                            <Button onClick={onConfirmMarker} type="primary">Додати показник</Button>
                         }
                         {isCreateMarkerVisible &&
-                            <Button onClick={onAddMarker} type="primary">Створити маркер</Button>
+                            <Button onClick={onAddMarker} type="primary">Створити показник</Button>
                         }
                     </Space>
                 </Col>

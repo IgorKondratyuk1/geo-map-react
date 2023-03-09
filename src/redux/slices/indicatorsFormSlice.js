@@ -4,13 +4,16 @@ const initState = {
     type: null,
     longitude: null,
     latitude: null,
-    geoValues: [{id: "1", "type": "water", "selectedItem": "mn", "value": "2"}, {id: "2", "type": "water", "selectedItem": "cu", "value": "4"}]
+    geoValues: []
 }
 
 const indicatorsFormSlice = createSlice({
     name: 'indicatorsForm',
     initialState: initState,
     reducers: {
+        setDefaultState(state) {
+            return {...initState};
+        },
         setType(state, action) {
             return {...state, type: action.payload};
         },
@@ -47,5 +50,5 @@ const indicatorsFormSlice = createSlice({
     },
 })
 
-export const { addGeoValue, setType, setCoordinates, changeGeoValueSelect, changeGeoValueInput } = indicatorsFormSlice.actions;
+export const { addGeoValue, setType, setCoordinates, changeGeoValueSelect, changeGeoValueInput, setDefaultState } = indicatorsFormSlice.actions;
 export default indicatorsFormSlice.reducer;

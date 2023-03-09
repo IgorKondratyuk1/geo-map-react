@@ -3,11 +3,17 @@ export const detectMarkerColor = (param) => {
         case "water":
             return "blue";
         case "company":
-            return "orange";
+            return "purple";
         case "soil":
             return "brown";
         case "radiation":
-            return "yellow"
+            return "yellow";
+        case "air":
+            return "lightblue";
+        case "waste":
+            return "green";
+        case "energy":
+            return "orange";
         default:
             return "red";
     }

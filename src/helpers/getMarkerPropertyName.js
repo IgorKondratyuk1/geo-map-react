@@ -1,8 +1,16 @@
-import {airParams, radiationParams, soilParams, waterParams} from "../dictionariesData";
+import {
+    airParams,
+    economicParams, energyParams,
+    healthParams,
+    radiationParams,
+    soilParams,
+    wasteParams,
+    waterParams
+} from "../dictionariesData";
 
 export const getMarkerLabelName = (type, value) => {
     let dictionaryArray = [];
-    console.log([type, value]);
+
     switch (type) {
         case 'air':
             dictionaryArray = airParams;
@@ -15,6 +23,18 @@ export const getMarkerLabelName = (type, value) => {
             break;
         case 'radiation':
             dictionaryArray = radiationParams;
+            break;
+        case 'waste':
+            dictionaryArray = wasteParams;
+            break;
+        case 'economic':
+            dictionaryArray = economicParams;
+            break;
+        case 'health':
+            dictionaryArray = healthParams;
+            break;
+        case 'energy':
+            dictionaryArray = energyParams;
             break;
         default:
             dictionaryArray = [];
