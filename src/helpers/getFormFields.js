@@ -1,4 +1,4 @@
-import CompanyMarkTemplate from "../components/InputTemplates/companyMarkTemplate";
+import CompanyMarkTemplate from "../components/InputTemplates/CompanyMarkTemplate";
 import React from "react";
 import {
     airParams,
