@@ -221,3 +221,14 @@ export const energyParams = [
         value: "thermalEnergy"
     },
 ]
+
+export const generalParams = [
+    ...airParams,
+    ...radiationParams,
+    ...soilParams,
+    ...waterParams,
+    ...economicParams,
+    ...healthParams,
+    ...energyParams,
+    ...wasteParams
+]

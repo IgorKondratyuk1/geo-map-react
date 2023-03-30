@@ -1,37 +1,43 @@
 import {Button, Col, Row, Space} from "antd";
 import React, {useEffect, useState} from "react";
-import s from "./MapLayout.module.css";
+import s from "./MapPage.module.css";
 import Map, {Marker, NavigationControl, Popup} from "react-map-gl";
 import CustomMarker from "../../components/CustomMap/CustomMarker/CustomMarker";
 import MarkerTypePopup from "../../components/MarkerTypePopup/MarkerTypePopup";
 import FillingPopup from "../../components/FillingPopup/FillingPopup";
 import PinContent from "../../components/PinContent/PinContent";
-import {addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
+import {addMarkerIndicator, addMarkers, addOneMarker} from "../../redux/slices/markersSlice";
 import {useDispatch, useSelector, useStore} from "react-redux";
 import {api} from "../../api/api";
 import {detectMarkerColor} from "../../helpers/detectMarkerColor";
 import {setCoordinates, setDefaultState, setType} from "../../redux/slices/indicatorsFormSlice";
-import MarkersFilter from "../../components/MarkersFilter/MarkersFilter";
-import {FilterOutlined} from "@ant-design/icons";
-import {airParams, markersType} from "../../dictionariesData";
 import Filters from "../../components/MarkersFilter/Filters";
+import {
+    hideAddMarkerDataPopup,
+    hideCreateMarkerDataPopup,
+    hideMarkerTypePopup, showCreateMarkerDataPopup,
+    showMarkerTypePopup
+} from "../../redux/slices/popupsSlice";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 
-export const MapLayout = () => {
+export const MapPage = () => {
     const store = useStore();
     const dispatch = useDispatch();
-    const markers = useSelector((state) => state.markers);
+    let [markers, setMarkers] = useState(useSelector((state) => state.markers));
     const markerType = useSelector((state) => state.tempMarker.markerType);
     const filters = useSelector((state) => state.filters);
     const filtersMarkerTypes = filters.markerTypes;
     const filtersProperties = filters.properties;
 
+    const isCreateMarkerDataPopup = useSelector((state) => state.popups.createMarkerDataPopup);
+    const isAddMarkerDataPopup = useSelector((state) => state.popups.addMarkerDataPopup);
+    const isMarkerTypeModalOpen = useSelector((state) => state.popups.markerTypePopup);
+
     const [isCreateMarkerVisible, setIsCreateMarkerVisible] = React.useState(true);
     const [isConfirmMarkerVisible, setIsConfirmMarkerVisible] = React.useState(false);
     const [isCancelMarkerVisible, setIsCancelMarkerVisible] = React.useState(false);
-    const [isFillingModalOpen, setIsFillingModalOpen] = React.useState(false);
-    const [isMarkerTypeModalOpen, setIsMarkerTypeModalOpen] = React.useState(false);
+
 
     // --- Map start ---
     const [pinInfo, setPinInfo] = React.useState(null);
@@ -49,27 +55,25 @@ export const MapLayout = () => {
 
     const isIncludeProperties = (marker) => {
         const indicatorsArr = marker.indicators;
-        for (let i = 0; i < indicatorsArr.length; i++) {
-            if (indicatorsArr[i]?.geoValues?.length > 0) {
-                const geoValues = indicatorsArr[i].geoValues.map(geoValue => geoValue.selectedItem)
-                for (let j = 0; j < geoValues.length; j++) {
-                    if (filtersProperties.includes(geoValues[j])) {
-                        return true;
+        if (indicatorsArr && indicatorsArr.length > 0) {
+            for (let i = 0; i < indicatorsArr.length; i++) {
+                if (indicatorsArr[i]?.geoValues?.length > 0) {
+                    const geoValues = indicatorsArr[i].geoValues.map(geoValue => geoValue.selectedItem)
+                    for (let j = 0; j < geoValues.length; j++) {
+                        if (filtersProperties.includes(geoValues[j])) {
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
             }
-
+        } else {
+            return false;
         }
     }
 
     const pins = (markers) => {
-        //console.log(markers);
-        console.log('res');
-        console.log(markers.filter(item => filtersMarkerTypes.includes(item.type) && isIncludeProperties));
-        return markers.filter(item => {
-            return (filtersMarkerTypes.includes(item.type) && isIncludeProperties(item))
-        }).map(marker => {
+        return markers.filter(item => (filtersMarkerTypes.includes(item.type) && isIncludeProperties(item))).map(marker => {
                 const color = detectMarkerColor(marker.type);
                 return (
                     <Marker key={marker.id}
@@ -110,16 +114,15 @@ export const MapLayout = () => {
     }
 
     function onAddMarker() {
-        setIsMarkerTypeModalOpen(true);
+        dispatch(showMarkerTypePopup())
         setBtnsVisibility(false, true, true);
     }
 
     function onConfirmMarker() {
-        setIsFillingModalOpen(true);
+        dispatch(showCreateMarkerDataPopup())
     }
 
-
-    const onCreate = async (values) => {
+    const onCreateData = async (values) => {
         dispatch(setType(markerType));
         dispatch(setCoordinates({longitude: tempMarker.longitude, latitude: tempMarker.latitude}));
         await createMarkerOnServer(store.getState().indicatorsForm);
@@ -129,8 +132,14 @@ export const MapLayout = () => {
 
         // Default markers and buttons visibility
         setIsTempMarkerShow(false);
-        setIsFillingModalOpen(false);
+        dispatch(hideCreateMarkerDataPopup());
         setBtnsVisibility(true, false, false);
+    };
+
+    const onAddData = async (values) => {
+        const filledForm = store.getState().indicatorsForm;
+        await addMarkerDataOnServer(filledForm.makerId, filledForm.geoValues);
+        dispatch(hideAddMarkerDataPopup());
     };
 
     const loadMarkersData = async () => {
@@ -143,8 +152,35 @@ export const MapLayout = () => {
         if (result) dispatch(addOneMarker(marker));
     }
 
+    const addMarkerDataOnServer = async (markerId, geoValues) => {
+        const result = await api.addIndicatorOnServer(markerId, geoValues);
+        if (result) {
+            const markerId = result.data.markerId;
+            const indicator = result.data;
+            dispatch(addMarkerIndicator({markerId, indicator}));
+            setPinInfo(null);
+        }
+    }
+
+
     return (
         <>
+            <MarkerTypePopup
+                visible={isMarkerTypeModalOpen}
+                setVisible={() => {dispatch(hideMarkerTypePopup());}}
+                onCancel={onCancelMarker}
+                onOk={generateNewMarker}
+            />
+            <FillingPopup
+                visible={isCreateMarkerDataPopup}
+                setVisible={() => {dispatch(hideCreateMarkerDataPopup());}}
+                onCreate={onCreateData}
+            />
+            <FillingPopup
+                visible={isAddMarkerDataPopup}
+                setVisible={() => {dispatch(hideAddMarkerDataPopup());}}
+                onCreate={onAddData}
+            />
             <Row>
                 <Col span={24}>
                     <Map
@@ -200,21 +236,8 @@ export const MapLayout = () => {
                     </Space>
                 </Col>
             </Row>
-
-            <MarkerTypePopup
-                visible={isMarkerTypeModalOpen}
-                setVisible={setIsMarkerTypeModalOpen}
-                onCancel={onCancelMarker}
-                onOk={generateNewMarker}
-            />
-
-            <FillingPopup
-                visible={isFillingModalOpen}
-                setVisible={setIsFillingModalOpen}
-                onCreate={onCreate}
-            />
         </>
     )
 }
 
-export default MapLayout;
+export default MapPage;

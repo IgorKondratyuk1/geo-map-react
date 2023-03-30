@@ -4,7 +4,7 @@ import Map, {
     Popup
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import React from "react";
+import React, {useEffect} from "react";
 import CustomMarker from "./CustomMarker/CustomMarker";
 
 const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;

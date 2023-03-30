@@ -4,7 +4,8 @@ const initState = {
     type: null,
     longitude: null,
     latitude: null,
-    geoValues: []
+    geoValues: [],
+    makerId: null
 }
 
 const indicatorsFormSlice = createSlice({
@@ -47,8 +48,11 @@ const indicatorsFormSlice = createSlice({
 
             return {...state, geoValues: newGeoValues};
         },
+        setUpdatingMarkerId(state, action) {
+            return {...state, makerId: action.payload};
+        }
     },
 })
 
-export const { addGeoValue, setType, setCoordinates, changeGeoValueSelect, changeGeoValueInput, setDefaultState } = indicatorsFormSlice.actions;
+export const { addGeoValue, setType, setCoordinates, changeGeoValueSelect, changeGeoValueInput, setDefaultState, setUpdatingMarkerId } = indicatorsFormSlice.actions;
 export default indicatorsFormSlice.reducer;

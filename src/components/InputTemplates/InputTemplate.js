@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {Button, Divider, Form, Input, Select} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {addGeoValue, changeGeoValueInput, changeGeoValueSelect} from "../../redux/slices/indicatorsFormSlice";
@@ -20,7 +20,7 @@ const InputGroup = ({id, index, markTypeName, markerTypeValue, selectParams }) =
             <Form.Item
                 id={id}
                 name={`${markerTypeValue}MarkName_${index + 1}`}
-                label={`Показник ${markTypeName} ${index + 1}`}
+                label={`Маркер ${markTypeName} ${index + 1}`}
             >
                 <Select options={selectParams} onChange={onSelectChange}/>
             </Form.Item>
@@ -58,7 +58,7 @@ const MarkTemplate = ({markTypeName, markTypeValue, selectParams}) => {
             })
             }
             <Button onClick={onAddInput}>
-                Додати показник {markTypeName}
+                Додати маркер {markTypeName}
             </Button>
             <Divider />
         </div>

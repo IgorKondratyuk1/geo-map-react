@@ -2,18 +2,16 @@ import {Form, Modal} from "antd";
 import {useSelector} from "react-redux";
 import {getFormFields} from "../../helpers/getFormFields";
 
-const FillingPopup = (props) => {
-    const { visible, setVisible, onCreate } = props;
+const FillingPopup = ({ visible, setVisible, onCreate }) => {
     const [form] = Form.useForm();
     const markerType = useSelector((state) => state.tempMarker.markerType);
 
     const handleCancel = () => {
-        setVisible(false);
+        setVisible();
     };
 
     const handleCreate = () => {
-        form
-            .validateFields()
+        form.validateFields()
             .then((values) => {
                 form.resetFields();
                 onCreate(values);
@@ -22,10 +20,11 @@ const FillingPopup = (props) => {
                 console.log("Validate Failed:", info);
             });
     };
+
     return (
         <Modal
             open={visible}
-            title="Внесіть показники"
+            title="Внесіть дані"
             okText="Ok"
             onCancel={handleCancel}
             onOk={handleCreate}

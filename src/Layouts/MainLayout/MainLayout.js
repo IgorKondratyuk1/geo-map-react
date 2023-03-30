@@ -1,10 +1,10 @@
-import {Layout, theme} from 'antd';
-import {MapLayout} from "../../Layouts/MapLayout/MapLayout";
-import s from "./MainPage.module.css";
+import {Layout, theme} from "antd";
 import CustomHeader from "../../components/CustomHeader/CustomHeader";
-const { Content } = Layout;
+import s from "./MainLayout.module.css";
+import {Outlet} from "react-router-dom";
+import {Content} from "antd/es/layout/layout";
 
-const MainPage = () => {
+export const MainLayout = () => {
     const {
         token: { colorBgContainer },
     } = theme.useToken();
@@ -20,11 +20,9 @@ const MainPage = () => {
                     className={s.contentContainer}
                     style={{background: colorBgContainer,}}
                 >
-                    <MapLayout />
+                    <Outlet></Outlet>
                 </div>
             </Content>
         </Layout>
     );
 }
-
-export default MainPage;
