@@ -24,7 +24,7 @@ const APP_MAP_TOKEN = process.env.REACT_APP_MAP_TOKEN;
 export const MapPage = () => {
     const store = useStore();
     const dispatch = useDispatch();
-    let [markers, setMarkers] = useState(useSelector((state) => state.markers));
+    const markers = useSelector((state) => state.markers);
     const markerType = useSelector((state) => state.tempMarker.markerType);
     const filters = useSelector((state) => state.filters);
     const filtersMarkerTypes = filters.markerTypes;
